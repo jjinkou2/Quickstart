@@ -1,4 +1,6 @@
 midi_keyboard.c
+midiserial.h -> midiserial.h
+midiserial.c -> midiserial.c
 >compiler=C
 >memtype=cmm main ram compact
 >optimize=-Os

@@ -14,14 +14,16 @@
 
 
 
-#include "simpletools.h"                      // Include simple tools
-#include "fdserial.h"
+//#include "simpletools.h"                      // Include simple tools
+//#include "fdserial.h"
+#include "midiserial.h"
+//#include "serial.h"
 
 // BANK
 #define DRUMCHANNEL    9
 #define CHANNEL0       0
 
-// Note For Drum
+// Notes For Drum
 #define BASSDRUM  0x23
 #define SNARE     0x26
 #define CLAP      0x27
@@ -47,14 +49,14 @@ int     get_bit_value(int value, int index);
 void    send_midi(int touch, int previous_touch);
 void    msleep(int ms);          // sleep for ms
 int     getButtons();           // used to get button states
-void changePrg(fdserial *midiout, char PatchNb);
+void    changePrg(serial *midiout, char PatchNb);
 
-void noteOn(fdserial *midiout, int data1, int data2);
+void    noteOn(serial *midiout, int data1, int data2);
 
 
-fdserial *midiout;
-int note;
-int CHANNEL = DRUMCHANNEL;
+serial *midiout;
+int      note;
+int      CHANNEL = DRUMCHANNEL;
 
 int drums_notes[8]     = {CYMBAL,OPENHH,TOM2,TOM1,
                           CLOSEDHH,CLAP,SNARE,BASSDRUM};
@@ -67,7 +69,7 @@ int main()
   DIRA |= 0x00ff0000;           // set LEDs for output
 
   /* start device */
-  midiout = fdserial_open(31,30,0,115200);
+  midiout = serial_open(31,30,0,115200);
 
 
   int programSelect=0;
@@ -159,14 +161,14 @@ void msleep(int ms){
   waitcnt(CLKFREQ/1000 * ms + CNT);
 }  
 
-void changePrg(fdserial *midiout, char PatchNb){
-  writeChar(midiout, 0xC0+CHANNEL);
-  writeChar(midiout, PatchNb);
+void changePrg(serial *midiout, char PatchNb){
+  serial_txChar(midiout, 0xC0+CHANNEL);
+  serial_txChar(midiout, PatchNb);
 }
 
-void noteOn(fdserial *midiout, int data1, int data2){
-  writeChar(midiout, 0x90+CHANNEL);
-  writeChar(midiout, data1);
-  writeChar(midiout, data2);
+void noteOn(serial *midiout, int data1, int data2){
+  serial_txChar(midiout, 0x90+CHANNEL);
+  serial_txChar(midiout, data1);
+  serial_txChar(midiout, data2);
 }  
 
